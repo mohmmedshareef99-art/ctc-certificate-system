@@ -161,29 +161,24 @@ export default function CertificateSearch({ compact = false }: CertificateSearch
             </div>
 
             <div className="space-y-1">
-              <span className="text-slate-500 text-[11px] block uppercase font-medium">Nationality</span>
-              <p className="text-sm font-semibold text-slate-800">{result.nationality}</p>
-            </div>
-
-            <div className="space-y-1">
               <span className="text-slate-500 text-[11px] block uppercase font-medium">AMP Approval Resolution</span>
               <p className="text-sm font-semibold text-amber-700 font-mono">{result.ampResolutionNo}</p>
-            </div>
-
-            <div className="md:col-span-2 space-y-1">
-              <span className="text-slate-500 text-[11px] block uppercase font-medium">STCW Course Trained</span>
-              <p className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <span className="px-2 py-0.5 rounded bg-sky-50 text-[#0088CC] font-mono text-xs border border-sky-200">
-                  {result.courseCode}
-                </span>
-                {result.courseTitle}
-              </p>
             </div>
 
             <div className="space-y-1">
               <span className="text-slate-500 text-[11px] block uppercase font-medium">Issue & Expiry Dates</span>
               <p className="text-xs font-mono text-slate-700">
                 Issued: <span className="text-emerald-700 font-bold">{result.issueDate}</span> | Expires: <span className="text-[#0088CC] font-bold">{result.expiryDate}</span>
+              </p>
+            </div>
+
+            <div className="md:col-span-2 lg:col-span-3 space-y-1">
+              <span className="text-slate-500 text-[11px] block uppercase font-medium">STCW Course Trained</span>
+              <p className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded bg-sky-50 text-[#0088CC] font-mono text-xs border border-sky-200">
+                  {result.courseCode}
+                </span>
+                {result.courseTitle}
               </p>
             </div>
 

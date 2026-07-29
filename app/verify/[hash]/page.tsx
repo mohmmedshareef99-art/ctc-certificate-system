@@ -171,14 +171,6 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
               </span>
             </div>
 
-            <div>
-              <span className="text-xs font-semibold text-slate-500 block uppercase tracking-wider">
-                Nacionality
-              </span>
-              <span className="text-base font-bold text-slate-900 block mt-1 uppercase">
-                {cert.candidate?.nationality ? cert.candidate.nationality.toUpperCase() : 'N/A'}
-              </span>
-            </div>
 
             <div>
               <span className="text-xs font-semibold text-slate-500 block uppercase tracking-wider">
