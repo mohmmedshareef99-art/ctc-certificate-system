@@ -156,7 +156,7 @@ export async function POST(request: Request) {
     const certNumHash = (numeric_hash || '').trim() || Math.floor(10000000000000 + Math.random() * 90000000000000).toString();
     const certStatus = normalizeStatus(status);
 
-    const certPayload = {
+    const fullCertPayload = {
       certificate_number: certNum,
       candidate_id: targetCandidateId,
       course_id: course_id,
@@ -178,9 +178,10 @@ export async function POST(request: Request) {
       numeric_hash: certNumHash
     };
 
-    const { data: insertedCert, error: insertErr } = await supabase
+    let insertedCert = null;
+    let { data: primaryData, error: insertErr } = await supabase
       .from('certificates')
-      .insert([certPayload])
+      .insert([fullCertPayload])
       .select(`
         *,
         candidate:candidates(*),
@@ -188,12 +189,44 @@ export async function POST(request: Request) {
       `)
       .single();
 
-    if (insertErr) {
-      console.error('Supabase certificate create error:', insertErr);
-      return NextResponse.json({ success: false, error: insertErr.message }, { status: 400 });
+    if (!insertErr && primaryData) {
+      insertedCert = primaryData;
+    } else {
+      console.warn("Full payload insert failed in POST /api/certificates, trying core fallback:", insertErr?.message);
+
+      const coreCertPayload = {
+        certificate_number: certNum,
+        candidate_id: targetCandidateId,
+        course_id: course_id,
+        issue_date: issue_date || new Date().toISOString().split('T')[0],
+        expiry_date: expiry_date || new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        status: certStatus,
+        verification_hash: certHash
+      };
+
+      const { data: fallbackData, error: fallbackErr } = await supabase
+        .from('certificates')
+        .insert([coreCertPayload])
+        .select(`
+          *,
+          candidate:candidates(*),
+          course:courses(*)
+        `)
+        .single();
+
+      if (fallbackErr || !fallbackData) {
+        console.error("CRITICAL SUPABASE INSERT ERROR:", JSON.stringify(fallbackErr || insertErr, null, 2));
+        return NextResponse.json({ success: false, error: `Failed to store certificate: ${fallbackErr?.message || insertErr?.message}` }, { status: 400 });
+      }
+
+      insertedCert = {
+        ...fullCertPayload,
+        ...fallbackData
+      };
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ||
+      (typeof window !== 'undefined' ? window.location.origin : 'https://panama-ctc.com');
     const verificationUrl = `${baseUrl.replace(/\/$/, '')}/verify/${certHash}`;
 
     return NextResponse.json({
@@ -211,4 +244,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

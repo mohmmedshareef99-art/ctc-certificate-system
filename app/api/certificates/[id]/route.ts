@@ -98,7 +98,8 @@ export async function PUT(
       }
     }
 
-    const { data: updatedCert, error: certErr } = await supabase
+    let updatedCert = null;
+    let { data: primaryData, error: certErr } = await supabase
       .from('certificates')
       .update(certPayload)
       .eq('id', id)
@@ -109,9 +110,38 @@ export async function PUT(
       `)
       .single();
 
-    if (certErr) {
-      console.error('Supabase update certificate error:', certErr);
-      return NextResponse.json({ success: false, error: certErr.message }, { status: 400 });
+    if (!certErr && primaryData) {
+      updatedCert = primaryData;
+    } else {
+      console.warn("Full cert payload update failed, trying core payload update fallback:", certErr?.message);
+
+      // Core fields only
+      const coreFields = ['certificate_number', 'course_id', 'issue_date', 'expiry_date', 'status'];
+      const corePayload: Record<string, any> = {};
+      for (const field of coreFields) {
+        if (certPayload[field] !== undefined) corePayload[field] = certPayload[field];
+      }
+
+      const { data: fallbackData, error: fallbackErr } = await supabase
+        .from('certificates')
+        .update(corePayload)
+        .eq('id', id)
+        .select(`
+          *,
+          candidate:candidates(*),
+          course:courses(*)
+        `)
+        .single();
+
+      if (fallbackErr || !fallbackData) {
+        console.error('Supabase update certificate error:', fallbackErr || certErr);
+        return NextResponse.json({ success: false, error: (fallbackErr || certErr)?.message || 'Update failed' }, { status: 400 });
+      }
+
+      updatedCert = {
+        ...certPayload,
+        ...fallbackData
+      };
     }
 
     return NextResponse.json({ success: true, certificate: updatedCert });

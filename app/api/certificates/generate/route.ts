@@ -64,17 +64,13 @@ export async function POST(request: Request) {
         .single();
 
       if (createCandErr || !newCand) {
-        console.warn('Supabase candidate create fallback error:', createCandErr);
-        candidateRecord = {
-          id: `cand-${Date.now().toString(36)}`,
-          full_name: fullName,
-          passport_id: passportId,
-          photo_url: photoUrl,
-          created_at: new Date().toISOString()
-        };
-      } else {
-        candidateRecord = newCand;
+        console.error("CRITICAL SUPABASE CANDIDATE INSERT ERROR:", JSON.stringify(createCandErr, null, 2));
+        return NextResponse.json(
+          { success: false, error: `Failed to store candidate record: ${createCandErr?.message || 'Unknown database error'}` },
+          { status: 500 }
+        );
       }
+      candidateRecord = newCand;
     }
 
     // 2. Generate Cryptographically Secure Verification Hash & Barcode Number
@@ -83,8 +79,8 @@ export async function POST(request: Request) {
     const certNumber = details.certificate_number?.trim() || `UAG-TC-26-ASE-${randomNum}`;
     const numericHash = details.numeric_hash?.trim() || Math.floor(10000000000000 + Math.random() * 90000000000000).toString();
 
-    // 3. Prepare Certificate DB Record Payload
-    const certPayload = {
+    // 3. Prepare Full Certificate DB Record Payload
+    const fullCertPayload = {
       certificate_number: certNumber,
       candidate_id: candidateRecord.id,
       course_id: courseId,
@@ -106,10 +102,11 @@ export async function POST(request: Request) {
       numeric_hash: numericHash
     };
 
-    // 4. Insert Certificate into Supabase DB
-    const { data: insertedCert, error: certInsertErr } = await supabase
+    // 4. Insert Certificate into Supabase DB with Resilient Fallback
+    let insertedCert = null;
+    let { data: primaryData, error: certInsertErr } = await supabase
       .from('certificates')
-      .insert([certPayload])
+      .insert([fullCertPayload])
       .select(`
         *,
         candidate:candidates(*),
@@ -117,24 +114,55 @@ export async function POST(request: Request) {
       `)
       .single();
 
-    if (certInsertErr) {
-      console.warn('Supabase certificate DB insert warning (falling back to generated record):', certInsertErr);
+    if (!certInsertErr && primaryData) {
+      insertedCert = primaryData;
+    } else {
+      console.warn("Full payload insert failed, trying resilient schema fallback:", certInsertErr?.message);
+
+      // Core baseline payload guaranteed to exist on certificates table schema
+      const coreCertPayload = {
+        certificate_number: certNumber,
+        candidate_id: candidateRecord.id,
+        course_id: courseId,
+        issue_date: issueDate || new Date().toISOString().split('T')[0],
+        expiry_date: expiryDate || new Date(Date.now() + 5 * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        status: details.status || 'VALID',
+        verification_hash: verificationHash
+      };
+
+      const { data: fallbackData, error: fallbackErr } = await supabase
+        .from('certificates')
+        .insert([coreCertPayload])
+        .select(`
+          *,
+          candidate:candidates(*),
+          course:courses(*)
+        `)
+        .single();
+
+      if (fallbackErr || !fallbackData) {
+        console.error("CRITICAL SUPABASE INSERT ERROR:", JSON.stringify(fallbackErr || certInsertErr, null, 2));
+        return NextResponse.json(
+          { success: false, error: `Failed to store certificate: ${fallbackErr?.message || certInsertErr?.message}` },
+          { status: 500 }
+        );
+      }
+
+      // Merge extended fields onto fallback returned record for presentation/PDF export
+      insertedCert = {
+        ...fullCertPayload,
+        ...fallbackData
+      };
     }
 
-    const finalCert = insertedCert || {
-      ...certPayload,
-      id: `cert-${Date.now().toString(36)}`,
-      created_at: new Date().toISOString(),
-      candidate: candidateRecord
-    };
-
     // 5. Construct Public Verification URL
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ||
+      (typeof window !== 'undefined' ? window.location.origin : 'https://panama-ctc.com');
     const verificationUrl = `${baseUrl.replace(/\/$/, '')}/verify/${verificationHash}`;
 
     return NextResponse.json({
       success: true,
-      certificate: finalCert,
+      certificate: insertedCert,
       candidate: candidateRecord,
       verification_hash: verificationHash,
       verification_url: verificationUrl

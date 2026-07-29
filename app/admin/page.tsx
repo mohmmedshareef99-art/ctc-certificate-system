@@ -403,9 +403,9 @@ export default function AdminPage() {
       setQuickIssuedCert(createdCert);
       setIsQuickIssuing(false);
       setShowIssuedModal(true);
-    } catch (err) {
-      console.error('Error issuing certificate for candidate:', err);
-      alert('Error generating certificate. Please verify details.');
+    } catch (err: any) {
+      console.error('CRITICAL SUPABASE INSERT ERROR:', err);
+      alert(`Failed to store certificate: ${err?.message || 'Error generating certificate.'}`);
       setIsQuickIssuing(false);
     } finally {
       setIsQuickIssuing(false);
@@ -424,7 +424,7 @@ export default function AdminPage() {
   // Helper to copy verification link to clipboard
   const handleCopyVerificationLink = (hash: string) => {
     if (typeof window === 'undefined') return;
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://panama-ctc.com');
     const url = `${baseUrl.replace(/\/$/, '')}/verify/${hash}`;
     navigator.clipboard.writeText(url);
     setCopiedLink(true);
@@ -643,8 +643,9 @@ export default function AdminPage() {
       setCertificates([cert, ...certificates]);
       setIsIssuing(false);
       setShowIssuedModal(true);
-    } catch (err) {
-      console.error('Error issuing certificate:', err);
+    } catch (err: any) {
+      console.error('CRITICAL SUPABASE INSERT ERROR:', err);
+      alert(`Failed to store certificate: ${err?.message || 'Failed to issue certificate.'}`);
       setIsIssuing(false);
     } finally {
       setIsIssuing(false);
@@ -2163,7 +2164,7 @@ export default function AdminPage() {
         {/* Certificate Generation Success & Candidate Sharing Action Modal */}
         {showIssuedModal && (quickIssuedCert || issuedCert) && (() => {
           const activeCert = quickIssuedCert || issuedCert!;
-          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000');
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (typeof window !== 'undefined' ? window.location.origin : 'https://panama-ctc.com');
           const verifyUrl = `${baseUrl.replace(/\/$/, '')}/verify/${activeCert.verification_hash}`;
 
           return (

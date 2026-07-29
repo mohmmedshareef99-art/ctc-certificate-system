@@ -27,13 +27,17 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
   useEffect(() => {
     async function loadCertificate() {
       setLoading(true);
-      if (!hash) {
+      const cleanHash = hash ? hash.trim() : '';
+      if (!cleanHash) {
         setLoading(false);
         return;
       }
 
       try {
-        const found = await getCertificateByHash(hash);
+        const found = await getCertificateByHash(cleanHash);
+        if (!found) {
+          console.warn(`[VERIFICATION AUDIT] Certificate record not found for scanned hash: "${cleanHash}" (raw parameter: "${hash}")`);
+        }
         setCert(found);
       } catch (err) {
         console.error('Error fetching certificate:', err);

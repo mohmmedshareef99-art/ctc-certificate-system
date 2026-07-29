@@ -491,6 +491,7 @@ export async function deleteCourse(id: string): Promise<void> {
  * Fetch certificate by verification_hash or certificate_number.
  */
 export async function getCertificateByHash(hash: string): Promise<CertificateRecord | null> {
+  if (!hash) return null;
   const cleanHash = hash.trim().toLowerCase();
 
   try {
@@ -502,8 +503,8 @@ export async function getCertificateByHash(hash: string): Promise<CertificateRec
       if (json.success && Array.isArray(json.certificates) && json.certificates.length > 0) {
         const match = json.certificates.find(
           (c: any) =>
-            c.verification_hash?.toLowerCase() === cleanHash ||
-            c.certificate_number?.toLowerCase() === cleanHash
+            c.verification_hash?.trim().toLowerCase() === cleanHash ||
+            c.certificate_number?.trim().toLowerCase() === cleanHash
         );
         if (match) return match as CertificateRecord;
       }
@@ -521,8 +522,8 @@ export async function getCertificateByHash(hash: string): Promise<CertificateRec
         candidate:candidates(*),
         course:courses(*)
       `)
-      .or(`verification_hash.eq.${cleanHash},certificate_number.ilike.${cleanHash}`)
-      .single();
+      .or(`verification_hash.ilike.${cleanHash},certificate_number.ilike.${cleanHash}`)
+      .maybeSingle();
 
     if (!error && data) {
       return data as CertificateRecord;
@@ -536,7 +537,7 @@ export async function getCertificateByHash(hash: string): Promise<CertificateRec
   const localCourses = getLocalStorageData<CourseRecord>(LOCAL_STORAGE_COURSES_KEY, INITIAL_COURSES);
 
   const match = localCerts.find(
-    (c) => c.verification_hash.toLowerCase() === cleanHash || c.certificate_number.toLowerCase() === cleanHash
+    (c) => c.verification_hash?.trim().toLowerCase() === cleanHash || c.certificate_number?.trim().toLowerCase() === cleanHash
   );
 
   if (match) {
@@ -549,6 +550,7 @@ export async function getCertificateByHash(hash: string): Promise<CertificateRec
     };
   }
 
+  console.warn(`[getCertificateByHash] Certificate hash/number not found: "${cleanHash}"`);
   return null;
 }
 
@@ -731,11 +733,36 @@ export async function createCertificate(
     numeric_hash: numHash
   };
 
-  try {
-    const supabase = createClient();
-    const { data, error } = await supabase
+  const supabase = createClient();
+  let insertedData: any = null;
+
+  const { data: fullData, error: fullError } = await supabase
+    .from('certificates')
+    .insert([newCert])
+    .select(`
+      *,
+      candidate:candidates(*),
+      course:courses(*)
+    `)
+    .single();
+
+  if (!fullError && fullData) {
+    insertedData = fullData;
+  } else {
+    console.warn('Full payload insert failed in addCertificate, attempting core fallback:', fullError?.message);
+    const corePayload = {
+      certificate_number: certNumber,
+      candidate_id: candidateId,
+      course_id: courseId,
+      issue_date: issueDate,
+      expiry_date: expiryDate,
+      status: details?.status || 'VALID',
+      verification_hash: hash
+    };
+
+    const { data: fallbackData, error: fallbackError } = await supabase
       .from('certificates')
-      .insert([newCert])
+      .insert([corePayload])
       .select(`
         *,
         candidate:candidates(*),
@@ -743,30 +770,24 @@ export async function createCertificate(
       `)
       .single();
 
-    if (!error && data) {
-      const local = getLocalStorageData<CertificateRecord>(LOCAL_STORAGE_CERTS_KEY, INITIAL_CERTIFICATES);
-      setLocalStorageData(LOCAL_STORAGE_CERTS_KEY, [data, ...local]);
-      return data as CertificateRecord;
+    if (fallbackError || !fallbackData) {
+      console.error("CRITICAL SUPABASE INSERT ERROR:", JSON.stringify(fallbackError || fullError, null, 2));
+      throw new Error(`Failed to store certificate: ${fallbackError?.message || fullError?.message}`);
     }
-  } catch (e) {
-    console.warn('Supabase certificate creation failed, fallback to local storage', e);
+
+    insertedData = {
+      ...newCert,
+      ...fallbackData
+    };
   }
 
-  const generatedId = `cert-${Date.now().toString(36)}`;
-  const localCandidates = getLocalStorageData<Candidate>(LOCAL_STORAGE_CANDIDATES_KEY, INITIAL_CANDIDATES);
-  const localCourses = getLocalStorageData<CourseRecord>(LOCAL_STORAGE_COURSES_KEY, INITIAL_COURSES);
+  if (insertedData) {
+    const local = getLocalStorageData<CertificateRecord>(LOCAL_STORAGE_CERTS_KEY, INITIAL_CERTIFICATES);
+    setLocalStorageData(LOCAL_STORAGE_CERTS_KEY, [insertedData, ...local]);
+    return insertedData as CertificateRecord;
+  }
 
-  const localCert: CertificateRecord = {
-    ...newCert,
-    id: generatedId,
-    created_at: new Date().toISOString(),
-    candidate: localCandidates.find((c) => c.id === candidateId) || INITIAL_CANDIDATES[0],
-    course: localCourses.find((c) => c.id === courseId) || INITIAL_COURSES[0]
-  };
-
-  const local = getLocalStorageData<CertificateRecord>(LOCAL_STORAGE_CERTS_KEY, INITIAL_CERTIFICATES);
-  setLocalStorageData(LOCAL_STORAGE_CERTS_KEY, [localCert, ...local]);
-  return localCert;
+  throw new Error('Supabase returned no data after certificate insertion.');
 }
 
 /**
@@ -792,38 +813,31 @@ export async function createCandidateAndCertificate(
   expiryDate: string,
   customCertDetails?: Partial<CertificateRecord>
 ): Promise<{ candidate: Candidate; certificate: CertificateRecord }> {
-  try {
-    const res = await fetch('/api/certificates/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        candidate: candidateData,
-        course_id: courseId,
-        issue_date: issueDate,
-        expiry_date: expiryDate,
-        details: customCertDetails
-      })
-    });
+  const res = await fetch('/api/certificates/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      candidate: candidateData,
+      course_id: courseId,
+      issue_date: issueDate,
+      expiry_date: expiryDate,
+      details: customCertDetails
+    })
+  });
 
-    if (res.ok) {
-      const data = await res.json();
-      if (data.success && data.certificate && data.candidate) {
-        const localCerts = getLocalStorageData<CertificateRecord>(LOCAL_STORAGE_CERTS_KEY, INITIAL_CERTIFICATES);
-        const localCandidates = getLocalStorageData<Candidate>(LOCAL_STORAGE_CANDIDATES_KEY, INITIAL_CANDIDATES);
-        setLocalStorageData(LOCAL_STORAGE_CERTS_KEY, [data.certificate, ...localCerts]);
-        setLocalStorageData(LOCAL_STORAGE_CANDIDATES_KEY, [data.candidate, ...localCandidates]);
-        return { candidate: data.candidate, certificate: data.certificate };
-      }
-    }
-  } catch (e) {
-    console.warn('API route call /api/certificates/generate failed, executing client fallback:', e);
+  const data = await res.json();
+  if (!res.ok || !data.success) {
+    console.error("CRITICAL SUPABASE INSERT ERROR:", JSON.stringify(data, null, 2));
+    throw new Error(data.error || 'Failed to store certificate in Supabase database.');
   }
 
-  // 1. Create candidate
-  const newCandidate = await createCandidate(candidateData);
+  if (data.certificate && data.candidate) {
+    const localCerts = getLocalStorageData<CertificateRecord>(LOCAL_STORAGE_CERTS_KEY, INITIAL_CERTIFICATES);
+    const localCandidates = getLocalStorageData<Candidate>(LOCAL_STORAGE_CANDIDATES_KEY, INITIAL_CANDIDATES);
+    setLocalStorageData(LOCAL_STORAGE_CERTS_KEY, [data.certificate, ...localCerts]);
+    setLocalStorageData(LOCAL_STORAGE_CANDIDATES_KEY, [data.candidate, ...localCandidates]);
+    return { candidate: data.candidate, certificate: data.certificate };
+  }
 
-  // 2. Generate certificate with detailed fields
-  const cert = await createCertificate(newCandidate.id, courseId, issueDate, expiryDate, customCertDetails);
-
-  return { candidate: newCandidate, certificate: cert };
+  throw new Error('API returned success without certificate/candidate records.');
 }

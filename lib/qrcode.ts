@@ -4,7 +4,8 @@ import QRCode from 'qrcode';
  * Generates a high-contrast DataURL string for a QR code pointing to the verification URL.
  */
 export async function generateQRCodeDataURL(hash: string): Promise<string> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ||
+    (typeof window !== 'undefined' ? window.location.origin : 'https://panama-ctc.com');
   const url = `${baseUrl.replace(/\/$/, '')}/verify/${hash}`;
 
   try {
@@ -28,7 +29,8 @@ export async function generateQRCodeDataURL(hash: string): Promise<string> {
  * Generates a high-contrast SVG string for a QR code pointing to the verification URL.
  */
 export async function generateQRCodeSVG(hash: string): Promise<string> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ||
+    (typeof window !== 'undefined' ? window.location.origin : 'https://panama-ctc.com');
   const url = `${baseUrl.replace(/\/$/, '')}/verify/${hash}`;
 
   try {
