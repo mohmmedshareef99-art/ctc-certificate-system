@@ -50,13 +50,15 @@ export async function POST(request: Request) {
 
       candidateRecord = updatedCand || existingCand;
     } else {
-      // Create new candidate
+      // Create new candidate with auto-generated 9-digit identity_number
+      const identityNum = candidateData.identity_number?.trim() || Math.floor(100000000 + Math.random() * 900000000).toString();
       const { data: newCand, error: createCandErr } = await supabase
         .from('candidates')
         .insert([
           {
             full_name: fullName,
             passport_id: passportId,
+            identity_number: identityNum,
             photo_url: photoUrl
           }
         ])

@@ -2,10 +2,10 @@
 
 import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
-import { 
-  Eye, 
-  ArrowLeft, 
-  Search, 
+import {
+  Eye,
+  ArrowLeft,
+  Search,
   XCircle,
   AlertTriangle
 } from 'lucide-react';
@@ -49,8 +49,8 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
     loadCertificate();
   }, [hash]);
 
-  const isRevoked = 
-    cert?.status?.toUpperCase() === 'REVOKED' || 
+  const isRevoked =
+    cert?.status?.toUpperCase() === 'REVOKED' ||
     cert?.status?.toUpperCase() === 'INVALID' ||
     cert?.status?.toUpperCase().includes('REVOKED') ||
     cert?.status?.toUpperCase().includes('INVALID');
@@ -62,7 +62,7 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 py-10 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center space-y-6">
-      
+
       {/* Top Breadcrumb Navigation */}
       <div className="w-full max-w-3xl flex items-center justify-between">
         <Link
@@ -81,7 +81,7 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
         </div>
       ) : cert ? (
         <div className="w-full max-w-3xl bg-white rounded-3xl border border-slate-200 shadow-md p-6 sm:p-8 space-y-6">
-          
+
           {/* Header Section: Logo + QR Validity Query Address Block */}
           <div className="flex items-start gap-4">
             <img
@@ -89,7 +89,7 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
               alt="Continental Training Center S.A"
               className="w-14 sm:w-16 h-auto object-contain shrink-0"
             />
-            
+
             <div className="space-y-1 text-left">
               <h1 className="text-lg sm:text-xl font-bold tracking-tight text-[#111827] leading-tight">
                 QR Validity Query
@@ -102,8 +102,8 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
                 <p>Panama City, Republic of Panama</p>
                 <p className="pt-0.5">
                   <span className="font-bold text-slate-900">Email: </span>
-                  <a 
-                    href="mailto:info@ctc.com.pa" 
+                  <a
+                    href="mailto:info@ctc.com.pa"
                     className="text-sky-500 hover:underline"
                   >
                     info@ctc.com.pa
@@ -155,10 +155,19 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
 
             <div>
               <span className="text-xs font-semibold text-slate-500 block uppercase tracking-wider">
-                Identity
+                Identity Number
               </span>
-              <span className="text-base font-bold text-slate-900 block mt-1">
-                {cert.candidate?.identity_number || cert.candidate?.passport_id || 'N/A'}
+              <span className="text-base font-bold text-[#111827] block mt-1 font-mono">
+                {cert.candidate?.identity_number || 'N/A'}
+              </span>
+            </div>
+
+            <div>
+              <span className="text-xs font-semibold text-slate-500 block uppercase tracking-wider">
+                Passport Number
+              </span>
+              <span className="text-base font-bold text-[#111827] block mt-1 font-mono uppercase">
+                {cert.candidate?.passport_id || 'N/A'}
               </span>
             </div>
 

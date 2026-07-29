@@ -43,6 +43,7 @@ export async function GET(request: Request) {
         const hash = cert.verification_hash?.toLowerCase() || '';
         const name = cert.candidate?.full_name?.toLowerCase() || '';
         const passport = cert.candidate?.passport_id?.toLowerCase() || '';
+        const identityNum = cert.candidate?.identity_number?.toLowerCase() || '';
         const courseTitle = cert.course?.title?.toLowerCase() || '';
 
         return (
@@ -50,6 +51,7 @@ export async function GET(request: Request) {
           hash.includes(q) ||
           name.includes(q) ||
           passport.includes(q) ||
+          identityNum.includes(q) ||
           courseTitle.includes(q)
         );
       });
@@ -123,14 +125,14 @@ export async function POST(request: Request) {
         if (Object.keys(candUpdates).length > 0) {
           await supabase.from('candidates').update(candUpdates).eq('id', existingCand.id);
         }
-      } else {
+        const finalIdentityNumber = identityNumber || Math.floor(100000000 + Math.random() * 900000000).toString();
         const { data: newCand, error: createCandErr } = await supabase
           .from('candidates')
           .insert([
             {
               full_name: fullName,
               passport_id: passportId,
-              identity_number: identityNumber || null,
+              identity_number: finalIdentityNumber,
               photo_url: photoUrl
             }
           ])

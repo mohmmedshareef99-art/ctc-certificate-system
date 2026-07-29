@@ -117,11 +117,13 @@ export async function POST(request: Request) {
       );
     }
 
-    // Prepare complete payload
+    // Prepare complete payload with auto-generated 9-digit identity_number if missing
+    const generatedIdentity = identity_number?.trim() || Math.floor(100000000 + Math.random() * 900000000).toString();
+
     const candidatePayload: Record<string, any> = {
       full_name: cleanName,
       passport_id: cleanPassport,
-      identity_number: identity_number?.trim() || null,
+      identity_number: generatedIdentity,
       rank_position: rank_position?.trim() || null,
       nationality: nationality?.trim() || null,
       date_of_birth: date_of_birth?.trim() || null,

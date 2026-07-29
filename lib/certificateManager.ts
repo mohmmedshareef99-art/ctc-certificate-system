@@ -1,5 +1,12 @@
 import { createClient } from '@/lib/supabase/client';
 
+/**
+ * Utility function to generate a random unique 9-digit numeric string for candidate identity.
+ */
+export function generateIdentityNumber(): string {
+  return Math.floor(100000000 + Math.random() * 900000000).toString();
+}
+
 export interface Candidate {
   id: string;
   full_name: string;
@@ -60,6 +67,7 @@ const INITIAL_CANDIDATES: Candidate[] = [
     id: 'cand-001',
     full_name: 'BRIJESH KUMAR KUSHWAHA',
     passport_id: 'AB483436',
+    identity_number: '948201735',
     rank_position: 'Able Seafarer Engine',
     nationality: 'Indian',
     date_of_birth: '1992-05-14',
@@ -69,6 +77,7 @@ const INITIAL_CANDIDATES: Candidate[] = [
     id: 'cand-002',
     full_name: 'MARÍA FERNANDA ROJAS MORALES',
     passport_id: 'PA-92810482',
+    identity_number: '849201948',
     rank_position: 'Second Officer',
     nationality: 'Panamanian',
     date_of_birth: '1995-11-20',
@@ -78,6 +87,7 @@ const INITIAL_CANDIDATES: Candidate[] = [
     id: 'cand-003',
     full_name: 'JOHNATHAN ARTHUR SMITH',
     passport_id: 'US-93821094',
+    identity_number: '938210941',
     rank_position: 'Chief Engineer',
     nationality: 'American',
     date_of_birth: '1988-03-08',
@@ -256,10 +266,15 @@ export async function getCandidates(search?: string): Promise<Candidate[]> {
  * Add a new candidate via API route.
  */
 export async function createCandidate(newCandidate: Omit<Candidate, 'id' | 'created_at' | 'certificates_count'>): Promise<Candidate> {
+  const payload = {
+    ...newCandidate,
+    identity_number: newCandidate.identity_number?.trim() || generateIdentityNumber()
+  };
+
   const res = await fetch('/api/candidates', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(newCandidate)
+    body: JSON.stringify(payload)
   });
 
   const json = await res.json();
