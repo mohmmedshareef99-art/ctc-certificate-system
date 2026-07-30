@@ -3,10 +3,10 @@
 import React, { useEffect, useState, use, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { 
-  ArrowLeft, 
-  Download, 
-  Printer, 
+import {
+  ArrowLeft,
+  Download,
+  Printer,
   XCircle,
   ShieldCheck,
   AlertTriangle
@@ -26,9 +26,9 @@ function CertificateViewContent({ params }: CertificateViewPageProps) {
 
   // Hide Print and Download buttons on public verification view by default.
   // Allow action buttons ONLY when accessed with explicit admin parameters (?admin=true, ?showActions=true, or ?mode=admin).
-  const showActions = 
-    searchParams.get('admin') === 'true' || 
-    searchParams.get('showActions') === 'true' || 
+  const showActions =
+    searchParams.get('admin') === 'true' ||
+    searchParams.get('showActions') === 'true' ||
     searchParams.get('mode') === 'admin';
 
   const [loading, setLoading] = useState(true);
@@ -55,8 +55,8 @@ function CertificateViewContent({ params }: CertificateViewPageProps) {
     loadCertificate();
   }, [hash]);
 
-  const isRevoked = 
-    cert?.status?.toUpperCase() === 'REVOKED' || 
+  const isRevoked =
+    cert?.status?.toUpperCase() === 'REVOKED' ||
     cert?.status?.toUpperCase() === 'INVALID' ||
     cert?.status?.toUpperCase().includes('REVOKED') ||
     cert?.status?.toUpperCase().includes('INVALID');
@@ -75,16 +75,16 @@ function CertificateViewContent({ params }: CertificateViewPageProps) {
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-start pt-3 sm:pt-6 px-2 sm:px-6 md:px-8 pb-8 bg-slate-900 text-slate-100 print:p-0 print:bg-white print:block">
-      
+
       {/* Top Toolbar (Hidden when printing) */}
       <div className="max-w-5xl w-full mb-4 sm:mb-6 print:hidden bg-slate-800/90 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-slate-700 shadow-xl flex flex-row items-center justify-between gap-2 sm:gap-4">
-        <Link
+        {/* <Link
           href={`/verify/${hash}`}
           className="inline-flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-sky-400 hover:text-sky-300 transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
           <span>Return to QR Validity Query</span>
-        </Link>
+        </Link> */}
 
         {cert && !isRevoked && (
           showActions ? (
