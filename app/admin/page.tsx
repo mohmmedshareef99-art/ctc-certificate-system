@@ -81,11 +81,16 @@ export default function AdminPage() {
   const [candName, setCandName] = useState('');
   const [candPassport, setCandPassport] = useState('');
   const [candIdentityNumber, setCandIdentityNumber] = useState('');
+  const [candSeamanBook, setCandSeamanBook] = useState('');
   const [candRankPosition, setCandRankPosition] = useState('');
   const [candNationality, setCandNationality] = useState('');
   const [candDob, setCandDob] = useState('');
+  const [candPlaceOfBirth, setCandPlaceOfBirth] = useState('');
+  const [candGender, setCandGender] = useState('');
   const [candEmail, setCandEmail] = useState('');
   const [candPhone, setCandPhone] = useState('');
+  const [candAddress, setCandAddress] = useState('');
+  const [candEmergencyContact, setCandEmergencyContact] = useState('');
   const [candPhoto, setCandPhoto] = useState('');
   const [isSavingCand, setIsSavingCand] = useState(false);
   const [candError, setCandError] = useState<string | null>(null);
@@ -98,11 +103,16 @@ export default function AdminPage() {
   const [editCandName, setEditCandName] = useState('');
   const [editCandPassport, setEditCandPassport] = useState('');
   const [editCandIdentityNumber, setEditCandIdentityNumber] = useState('');
+  const [editCandSeamanBook, setEditCandSeamanBook] = useState('');
   const [editCandRankPosition, setEditCandRankPosition] = useState('');
   const [editCandNationality, setEditCandNationality] = useState('');
   const [editCandDob, setEditCandDob] = useState('');
+  const [editCandPlaceOfBirth, setEditCandPlaceOfBirth] = useState('');
+  const [editCandGender, setEditCandGender] = useState('');
   const [editCandEmail, setEditCandEmail] = useState('');
   const [editCandPhone, setEditCandPhone] = useState('');
+  const [editCandAddress, setEditCandAddress] = useState('');
+  const [editCandEmergencyContact, setEditCandEmergencyContact] = useState('');
   const [editCandPhoto, setEditCandPhoto] = useState('');
   const [isUpdatingCand, setIsUpdatingCand] = useState(false);
   const [editCandError, setEditCandError] = useState<string | null>(null);
@@ -443,22 +453,32 @@ export default function AdminPage() {
         full_name: candName.trim(),
         passport_id: candPassport.trim(),
         identity_number: candIdentityNumber.trim(),
+        seaman_book_number: candSeamanBook.trim(),
         rank_position: candRankPosition.trim(),
         nationality: candNationality.trim(),
         date_of_birth: candDob,
+        place_of_birth: candPlaceOfBirth.trim(),
+        gender: candGender.trim(),
         email: candEmail.trim(),
         phone: candPhone.trim(),
+        address: candAddress.trim(),
+        emergency_contact: candEmergencyContact.trim(),
         photo_url: candPhoto.trim() || undefined
       });
       setCandidates(deduplicateCandidates([created, ...candidates]));
       setCandName('');
       setCandPassport('');
       setCandIdentityNumber('');
+      setCandSeamanBook('');
       setCandRankPosition('');
       setCandNationality('');
       setCandDob('');
+      setCandPlaceOfBirth('');
+      setCandGender('');
       setCandEmail('');
       setCandPhone('');
+      setCandAddress('');
+      setCandEmergencyContact('');
       setCandPhoto('');
       alert(`Seafarer registered successfully: ${created.full_name}`);
     } catch (err: any) {
@@ -475,11 +495,16 @@ export default function AdminPage() {
     setEditCandName(cand.full_name || '');
     setEditCandPassport(cand.passport_id || '');
     setEditCandIdentityNumber(cand.identity_number || '');
+    setEditCandSeamanBook(cand.seaman_book_number || '');
     setEditCandRankPosition(cand.rank_position || '');
     setEditCandNationality(cand.nationality || '');
     setEditCandDob(cand.date_of_birth || '');
+    setEditCandPlaceOfBirth(cand.place_of_birth || '');
+    setEditCandGender(cand.gender || '');
     setEditCandEmail(cand.email || '');
     setEditCandPhone(cand.phone || '');
+    setEditCandAddress(cand.address || '');
+    setEditCandEmergencyContact(cand.emergency_contact || '');
     setEditCandPhoto(cand.photo_url || '');
     setEditCandError(null);
   };
@@ -496,11 +521,16 @@ export default function AdminPage() {
         full_name: editCandName.trim(),
         passport_id: editCandPassport.trim(),
         identity_number: editCandIdentityNumber.trim(),
+        seaman_book_number: editCandSeamanBook.trim(),
         rank_position: editCandRankPosition.trim(),
         nationality: editCandNationality.trim(),
         date_of_birth: editCandDob,
+        place_of_birth: editCandPlaceOfBirth.trim(),
+        gender: editCandGender.trim(),
         email: editCandEmail.trim(),
         phone: editCandPhone.trim(),
+        address: editCandAddress.trim(),
+        emergency_contact: editCandEmergencyContact.trim(),
         photo_url: editCandPhoto.trim()
       });
 
@@ -1631,8 +1661,10 @@ export default function AdminPage() {
                   cand.full_name?.toLowerCase().includes(q) ||
                   cand.passport_id?.toLowerCase().includes(q) ||
                   cand.identity_number?.toLowerCase().includes(q) ||
+                  cand.seaman_book_number?.toLowerCase().includes(q) ||
                   cand.rank_position?.toLowerCase().includes(q) ||
-                  cand.nationality?.toLowerCase().includes(q)
+                  cand.nationality?.toLowerCase().includes(q) ||
+                  cand.place_of_birth?.toLowerCase().includes(q)
                 );
               });
 
@@ -1646,7 +1678,7 @@ export default function AdminPage() {
                         Register Seafarer
                       </h2>
                       <p className="text-xs text-slate-500 mt-1">
-                        Create a new seafarer record directly in Supabase candidates database.
+                        Create a complete Maritime Seafarer profile in Supabase database.
                       </p>
                     </div>
 
@@ -1672,18 +1704,33 @@ export default function AdminPage() {
                         />
                       </div>
 
-                      <div>
-                        <label className="block font-bold text-slate-700 mb-1">
-                          Passport Number <span className="text-rose-500">*</span>:
-                        </label>
-                        <input
-                          type="text"
-                          value={candPassport}
-                          onChange={(e) => setCandPassport(e.target.value)}
-                          placeholder="e.g. AB483436"
-                          required
-                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900 focus:outline-none focus:border-[#0088CC]"
-                        />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block font-bold text-slate-700 mb-1">
+                            Passport Number <span className="text-rose-500">*</span>:
+                          </label>
+                          <input
+                            type="text"
+                            value={candPassport}
+                            onChange={(e) => setCandPassport(e.target.value)}
+                            placeholder="e.g. AB483436"
+                            required
+                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block font-bold text-slate-700 mb-1">
+                            Seaman's Book / CDC No:
+                          </label>
+                          <input
+                            type="text"
+                            value={candSeamanBook}
+                            onChange={(e) => setCandSeamanBook(e.target.value)}
+                            placeholder="e.g. CDC-928104"
+                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                          />
+                        </div>
                       </div>
 
                       <div>
@@ -1695,14 +1742,14 @@ export default function AdminPage() {
                             type="text"
                             value={candIdentityNumber}
                             onChange={(e) => setCandIdentityNumber(e.target.value)}
-                            placeholder="e.g. 839201"
+                            placeholder="Auto-generated 9-digit ID"
                             className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900 focus:outline-none focus:border-[#0088CC]"
                           />
                           <button
                             type="button"
                             onClick={() => {
-                              const random6Digit = Math.floor(100000 + Math.random() * 900000).toString();
-                              setCandIdentityNumber(random6Digit);
+                              const random9Digit = Math.floor(100000000 + Math.random() * 900000000).toString();
+                              setCandIdentityNumber(random9Digit);
                             }}
                             className="shrink-0 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
@@ -1748,6 +1795,33 @@ export default function AdminPage() {
                         </div>
 
                         <div>
+                          <label className="block font-bold text-slate-700 mb-1">Place of Birth:</label>
+                          <input
+                            type="text"
+                            value={candPlaceOfBirth}
+                            onChange={(e) => setCandPlaceOfBirth(e.target.value)}
+                            placeholder="e.g. Panama City"
+                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block font-bold text-slate-700 mb-1">Gender:</label>
+                          <select
+                            value={candGender}
+                            onChange={(e) => setCandGender(e.target.value)}
+                            className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                          >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+
+                        <div>
                           <label className="block font-bold text-slate-700 mb-1">Phone Number:</label>
                           <input
                             type="tel"
@@ -1766,6 +1840,28 @@ export default function AdminPage() {
                           value={candEmail}
                           onChange={(e) => setCandEmail(e.target.value)}
                           placeholder="seafarer@maritime.com"
+                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-1">Residential Address:</label>
+                        <input
+                          type="text"
+                          value={candAddress}
+                          onChange={(e) => setCandAddress(e.target.value)}
+                          placeholder="Full Street Address / City / Country"
+                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block font-bold text-slate-700 mb-1">Emergency Contact:</label>
+                        <input
+                          type="text"
+                          value={candEmergencyContact}
+                          onChange={(e) => setCandEmergencyContact(e.target.value)}
+                          placeholder="Name & Contact Phone"
                           className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
                         />
                       </div>
@@ -1826,7 +1922,7 @@ export default function AdminPage() {
                         type="text"
                         value={candSearch}
                         onChange={(e) => setCandSearch(e.target.value)}
-                        placeholder="Search seafarers by Name, Passport ID, Identity No, Rank / Position, or Nationality..."
+                        placeholder="Search seafarers by Name, Passport, CDC No, Identity No, Rank / Position, or Nationality..."
                         className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
                       />
                       {candSearch && (
@@ -1873,12 +1969,22 @@ export default function AdminPage() {
                                       {cand.rank_position}
                                     </span>
                                   )}
+                                  {cand.gender && (
+                                    <span className="px-2 py-0.5 bg-slate-100 text-slate-600 font-medium text-[10px] rounded-md border border-slate-200">
+                                      {cand.gender}
+                                    </span>
+                                  )}
                                 </div>
 
-                                <div className="flex items-center gap-3 text-xs text-slate-500 flex-wrap">
+                                <div className="flex items-center gap-2.5 text-xs text-slate-500 flex-wrap">
                                   <span className="font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-700 font-bold">
                                     Passport: {cand.passport_id}
                                   </span>
+                                  {cand.seaman_book_number && (
+                                    <span className="font-mono bg-emerald-50 px-2 py-0.5 rounded text-emerald-700 font-bold border border-emerald-100">
+                                      CDC: {cand.seaman_book_number}
+                                    </span>
+                                  )}
                                   {cand.identity_number && (
                                     <span className="font-mono bg-blue-50 px-2 py-0.5 rounded text-[#0088CC] font-bold border border-blue-100">
                                       ID: {cand.identity_number}
@@ -1886,6 +1992,7 @@ export default function AdminPage() {
                                   )}
                                   {cand.nationality && <span>Nationality: {cand.nationality}</span>}
                                   {cand.date_of_birth && <span>DOB: {cand.date_of_birth}</span>}
+                                  {cand.place_of_birth && <span>POB: {cand.place_of_birth}</span>}
                                 </div>
                               </div>
                             </div>
@@ -2782,17 +2889,32 @@ export default function AdminPage() {
                   />
                 </div>
 
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">
-                    Passport ID <span className="text-rose-500">*</span>:
-                  </label>
-                  <input
-                    type="text"
-                    value={editCandPassport}
-                    onChange={(e) => setEditCandPassport(e.target.value)}
-                    required
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900 focus:outline-none focus:border-[#0088CC]"
-                  />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      Passport ID <span className="text-rose-500">*</span>:
+                    </label>
+                    <input
+                      type="text"
+                      value={editCandPassport}
+                      onChange={(e) => setEditCandPassport(e.target.value)}
+                      required
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      Seaman's Book / CDC No:
+                    </label>
+                    <input
+                      type="text"
+                      value={editCandSeamanBook}
+                      onChange={(e) => setEditCandSeamanBook(e.target.value)}
+                      placeholder="e.g. CDC-928104"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -2810,8 +2932,8 @@ export default function AdminPage() {
                     <button
                       type="button"
                       onClick={() => {
-                        const random6Digit = Math.floor(100000 + Math.random() * 900000).toString();
-                        setEditCandIdentityNumber(random6Digit);
+                        const random9Digit = Math.floor(100000000 + Math.random() * 900000000).toString();
+                        setEditCandIdentityNumber(random9Digit);
                       }}
                       className="shrink-0 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 transition-colors flex items-center gap-1.5 cursor-pointer"
                     >
@@ -2855,6 +2977,33 @@ export default function AdminPage() {
                   </div>
 
                   <div>
+                    <label className="block font-bold text-slate-700 mb-1">Place of Birth:</label>
+                    <input
+                      type="text"
+                      value={editCandPlaceOfBirth}
+                      onChange={(e) => setEditCandPlaceOfBirth(e.target.value)}
+                      placeholder="e.g. Panama City"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">Gender:</label>
+                    <select
+                      value={editCandGender}
+                      onChange={(e) => setEditCandGender(e.target.value)}
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+
+                  <div>
                     <label className="block font-bold text-slate-700 mb-1">Phone Number:</label>
                     <input
                       type="tel"
@@ -2871,6 +3020,28 @@ export default function AdminPage() {
                     type="email"
                     value={editCandEmail}
                     onChange={(e) => setEditCandEmail(e.target.value)}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Residential Address:</label>
+                  <input
+                    type="text"
+                    value={editCandAddress}
+                    onChange={(e) => setEditCandAddress(e.target.value)}
+                    placeholder="Full Street Address / City / Country"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Emergency Contact:</label>
+                  <input
+                    type="text"
+                    value={editCandEmergencyContact}
+                    onChange={(e) => setEditCandEmergencyContact(e.target.value)}
+                    placeholder="Name & Contact Phone"
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-900 focus:outline-none focus:border-[#0088CC]"
                   />
                 </div>

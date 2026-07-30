@@ -42,8 +42,10 @@ export async function GET(request: Request) {
           cand.full_name?.toLowerCase().includes(q) ||
           cand.passport_id?.toLowerCase().includes(q) ||
           cand.identity_number?.toLowerCase().includes(q) ||
+          cand.seaman_book_number?.toLowerCase().includes(q) ||
           cand.rank_position?.toLowerCase().includes(q) ||
-          cand.nationality?.toLowerCase().includes(q)
+          cand.nationality?.toLowerCase().includes(q) ||
+          cand.place_of_birth?.toLowerCase().includes(q)
         );
       }
 
@@ -61,8 +63,10 @@ export async function GET(request: Request) {
         cand.full_name?.toLowerCase().includes(q) ||
         cand.passport_id?.toLowerCase().includes(q) ||
         cand.identity_number?.toLowerCase().includes(q) ||
+        cand.seaman_book_number?.toLowerCase().includes(q) ||
         cand.rank_position?.toLowerCase().includes(q) ||
-        cand.nationality?.toLowerCase().includes(q)
+        cand.nationality?.toLowerCase().includes(q) ||
+        cand.place_of_birth?.toLowerCase().includes(q)
       );
     }
 
@@ -86,8 +90,13 @@ export async function POST(request: Request) {
       rank_position,
       nationality,
       date_of_birth,
+      place_of_birth,
+      seaman_book_number,
+      gender,
       email,
       phone,
+      address,
+      emergency_contact,
       photo_url
     } = body;
 
@@ -127,8 +136,13 @@ export async function POST(request: Request) {
       rank_position: rank_position?.trim() || null,
       nationality: nationality?.trim() || null,
       date_of_birth: date_of_birth?.trim() || null,
+      place_of_birth: place_of_birth?.trim() || null,
+      seaman_book_number: seaman_book_number?.trim() || null,
+      gender: gender?.trim() || null,
       email: email?.trim() || null,
       phone: phone?.trim() || null,
+      address: address?.trim() || null,
+      emergency_contact: emergency_contact?.trim() || null,
       photo_url: photo_url?.trim() || null
     };
 
@@ -161,12 +175,7 @@ export async function POST(request: Request) {
       // Merge extra client values into returned record for UI consistency
       data = {
         ...fallbackResult.data,
-        identity_number: candidatePayload.identity_number,
-        rank_position: candidatePayload.rank_position,
-        nationality: candidatePayload.nationality,
-        date_of_birth: candidatePayload.date_of_birth,
-        email: candidatePayload.email,
-        phone: candidatePayload.phone
+        ...candidatePayload
       };
       error = null;
     } else if (error) {

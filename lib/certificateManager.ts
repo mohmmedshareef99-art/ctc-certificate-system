@@ -15,8 +15,13 @@ export interface Candidate {
   rank_position?: string;
   nationality?: string;
   date_of_birth?: string;
+  place_of_birth?: string;
+  seaman_book_number?: string;
+  gender?: string;
   email?: string;
   phone?: string;
+  address?: string;
+  emergency_contact?: string;
   photo_url?: string;
   created_at?: string;
   certificates_count?: number;
@@ -239,8 +244,11 @@ export async function getCandidates(search?: string): Promise<Candidate[]> {
         filtered = filtered.filter((c: any) =>
           c.full_name?.toLowerCase().includes(q) ||
           c.passport_id?.toLowerCase().includes(q) ||
+          c.identity_number?.toLowerCase().includes(q) ||
+          c.seaman_book_number?.toLowerCase().includes(q) ||
           c.rank_position?.toLowerCase().includes(q) ||
-          c.nationality?.toLowerCase().includes(q)
+          c.nationality?.toLowerCase().includes(q) ||
+          c.place_of_birth?.toLowerCase().includes(q)
         );
       }
       return deduplicate(filtered);

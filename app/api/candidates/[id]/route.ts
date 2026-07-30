@@ -19,8 +19,13 @@ export async function PUT(
       rank_position,
       nationality,
       date_of_birth,
+      place_of_birth,
+      seaman_book_number,
+      gender,
       email,
       phone,
+      address,
+      emergency_contact,
       photo_url
     } = body;
 
@@ -51,8 +56,13 @@ export async function PUT(
     if (rank_position !== undefined) updatePayload.rank_position = rank_position?.trim() || null;
     if (nationality !== undefined) updatePayload.nationality = nationality?.trim() || null;
     if (date_of_birth !== undefined) updatePayload.date_of_birth = date_of_birth?.trim() || null;
+    if (place_of_birth !== undefined) updatePayload.place_of_birth = place_of_birth?.trim() || null;
+    if (seaman_book_number !== undefined) updatePayload.seaman_book_number = seaman_book_number?.trim() || null;
+    if (gender !== undefined) updatePayload.gender = gender?.trim() || null;
     if (email !== undefined) updatePayload.email = email?.trim() || null;
     if (phone !== undefined) updatePayload.phone = phone?.trim() || null;
+    if (address !== undefined) updatePayload.address = address?.trim() || null;
+    if (emergency_contact !== undefined) updatePayload.emergency_contact = emergency_contact?.trim() || null;
     if (photo_url !== undefined) updatePayload.photo_url = photo_url?.trim() || null;
 
     let { data, error } = await supabase

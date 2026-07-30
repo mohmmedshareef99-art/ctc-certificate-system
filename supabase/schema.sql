@@ -20,7 +20,17 @@ CREATE TABLE IF NOT EXISTS public.candidates (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     full_name VARCHAR(255) NOT NULL,
     passport_id VARCHAR(100) NOT NULL UNIQUE,
-    identity_number VARCHAR(100),
+    identity_number VARCHAR(100) UNIQUE,
+    rank_position VARCHAR(150),
+    nationality VARCHAR(100),
+    date_of_birth DATE,
+    place_of_birth VARCHAR(150),
+    seaman_book_number VARCHAR(100),
+    gender VARCHAR(20),
+    email VARCHAR(255),
+    phone VARCHAR(50),
+    address TEXT,
+    emergency_contact VARCHAR(255),
     photo_url TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
