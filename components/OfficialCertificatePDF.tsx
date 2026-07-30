@@ -151,12 +151,12 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
           <div className="w-full h-full transform scale-[0.96] origin-top flex flex-col box-border">
             {/* Outer Braided / Hatched Pattern Frame */}
             <div
-              className="w-full h-full p-2 bg-white flex flex-col box-border overflow-hidden"
+              className="w-full h-full p-[3.5px] bg-white flex flex-col box-border overflow-hidden"
               style={{
-                backgroundImage: 'repeating-linear-gradient(-45deg, #000000 0px, #000000 5px, #ffffff 5px, #ffffff 10px)',
+                backgroundImage: 'repeating-linear-gradient(-45deg, #000000 0px, #000000 3px, #ffffff 3px, #ffffff 6px)',
               }}
             >
-              <div className="bg-white p-1 flex-1 flex flex-col box-border overflow-hidden">
+              <div className="bg-white p-[1px] flex-1 flex flex-col box-border overflow-hidden">
                 {/* Inner Thin Black Rectangle Border Frame with strict padding */}
                 <div className="border border-black p-5 relative bg-white flex-1 flex flex-col justify-between box-border overflow-hidden">
 
@@ -228,15 +228,15 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
 
                       {/* Candidate Full Name (Underlined) */}
                       <div className="py-0.5">
-                        <h3 className="text-2xl font-bold text-black underline decoration-black underline-offset-4 tracking-wide uppercase font-sans whitespace-nowrap inline-block">
+                        <h3 className="text-sm font-bold text-black underline decoration-black underline-offset-4 tracking-wide uppercase font-sans whitespace-nowrap inline-block">
                           {candidateName}
                         </h3>
                       </div>
 
                       {/* Passport Number */}
                       <div className="pb-0.5">
-                        <p className="text-xs font-bold text-black tracking-wide">
-                          Passport No: <span className="underline decoration-black underline-offset-2">{passportNo}</span>
+                        <p className="text-xs text-black tracking-wide">
+                          <span className='font-bold'>Passport No:</span> <span className="underline decoration-black underline-offset-2">{passportNo}</span>
                         </p>
                       </div>
 
@@ -247,7 +247,7 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
 
                       {/* Course Name */}
                       <div className="py-0.5">
-                        <h4 className="text-xl sm:text-2xl font-black text-black tracking-wider uppercase font-sans">
+                        <h4 className="text-sm sm:text-lg font-bold text-black tracking-wider uppercase font-sans">
                           {courseTitle}
                         </h4>
                       </div>
@@ -259,23 +259,24 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
                           The course fulfills minimum requirements of
                         </p>
 
-                        <p className="font-bold text-black leading-snug px-2">
-                          {stcwRegulation}
+                        <p className="font-bold text-black leading-snug px-2 whitespace-pre-line">
+                          {stcwRegulation?.replace(/Training,\s*/, 'Training,\n')}
                         </p>
 
                         {/* Resolution & Dates Paragraph */}
                         <p className="text-black font-normal leading-snug pt-0.5">
-                          This course has been approved by the Government of <span className="font-bold underline decoration-black">PANAMA</span>, by means of Resolution No. <span className="font-bold underline decoration-black">{resolutionNo}</span> dated on <span className="font-bold underline decoration-black">{resolutionDateStr}</span> and Valid until <span className="font-bold underline decoration-black">{resolutionExpiryStr}</span>
+                          This course has been approved by the Government of <span className="underline decoration-black">PANAMA</span>, by means of Resolution No. <span className="underline decoration-black">{resolutionNo}</span><br />
+                          dated on <span className="underline decoration-black">{resolutionDateStr}</span> and Valid until <span className="underline decoration-black">{resolutionExpiryStr}</span>
                         </p>
 
                         {/* Held From / To / Mode / Location / Issue & Expiry Dates */}
                         <p className="text-black font-normal leading-snug">
-                          Held from <span className="font-bold underline decoration-black">{heldFromStr}</span> to <span className="font-bold underline decoration-black">{heldToStr}</span> Course Mode: <span className="font-bold underline decoration-black">{courseMode}</span> Conducted at <span className="font-bold underline decoration-black">{conductedAt}</span> This certificate was issued on <span className="font-bold underline decoration-black">{issueDateStr}</span>, Valid until <span className="font-bold underline decoration-black">{expiryDateStr}</span>
+                          <span className="font-bold">Held from</span> <span className="underline decoration-black">{heldFromStr}</span> <span className='font-bold'>to</span> <span className="underline decoration-black">{heldToStr}</span> <span className='font-bold'>Course Mode:</span> <span className="underline decoration-black">{courseMode}</span> <span className='font-bold'>Conducted at</span> <span className="underline decoration-black">{conductedAt}</span><br /> <span className='font-bold'>This certificate was issued on</span> <span className="underline decoration-black">{issueDateStr}</span>, <span className='font-bold'>Valid until</span> <span className="underline decoration-black">{expiryDateStr}</span>
                         </p>
 
                         {/* Validity Banner Statement */}
                         <div className="pt-1">
-                          <p className="font-bold text-xs text-black underline decoration-black inline-block">
+                          <p className="font-normal mt-2 text-xs text-black underline decoration-black inline-block">
                             {validityText}
                           </p>
                         </div>
@@ -299,7 +300,7 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
                         src="/images/signature.png"
                         alt="CTC General Manager Signature"
                         crossOrigin="anonymous"
-                        className="h-14 md:h-16 w-auto object-contain mx-auto mix-blend-multiply"
+                        className="h-20 md:h-24 w-auto object-contain mx-auto mix-blend-multiply"
                         style={{ mixBlendMode: 'multiply' }}
                       />
                     </div>
@@ -332,7 +333,7 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
             </div>
           </div>
         </div>
-      </div>
+      </div >
     </>
   );
 }
