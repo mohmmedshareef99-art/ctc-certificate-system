@@ -4,7 +4,6 @@ import React, { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import {
   Eye,
-  ArrowLeft,
   Search,
   XCircle,
   AlertTriangle
@@ -62,17 +61,6 @@ export default function VerifyHashPage({ params }: VerifyHashPageProps) {
 
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900 py-10 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center space-y-6">
-
-      {/* Top Breadcrumb Navigation */}
-      <div className="w-full max-w-3xl flex items-center justify-between">
-        <Link
-          href="/verify"
-          className="inline-flex items-center gap-2 text-xs font-bold text-[#0088CC] hover:text-[#0066AA] transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Return to Verification Portal
-        </Link>
-      </div>
 
       {loading ? (
         <div className="w-full max-w-3xl p-12 bg-white rounded-2xl border border-slate-200 shadow-md text-center space-y-4">
