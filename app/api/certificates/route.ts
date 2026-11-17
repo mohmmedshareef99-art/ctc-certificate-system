@@ -168,7 +168,7 @@ export async function POST(request: Request) {
       verification_hash: certHash,
       salutation: salutation || 'Mr.',
       stcw_regulation: stcw_regulation || 'Regulation III/5, Section A-III/5, Table III/5 of the IMO International Convention on Standards of Training, Certification and Watchkeeping for Seafarers STCW 1978, as amended',
-      resolution_number: resolution_number || 'DGGM-CFM-005-2024',
+      resolution_number: resolution_number || 'DGGM-CFM-005-2025',
       resolution_date: resolution_date || '2024-02-06',
       resolution_expiry: resolution_expiry || '2026-06-12',
       held_from: held_from || '2026-03-10',
@@ -176,7 +176,7 @@ export async function POST(request: Request) {
       course_mode: course_mode || 'Presential',
       conducted_at: conducted_at || 'AZERBAIJAN',
       validity_years_text: validity_years_text || '(THIS CERTIFICATE IS VALID FOR FIVE (5) YEARS)',
-      revision_code: revision_code || 'REV. 2/2024',
+      revision_code: revision_code || 'REV. 2/2025',
       numeric_hash: certNumHash
     };
 

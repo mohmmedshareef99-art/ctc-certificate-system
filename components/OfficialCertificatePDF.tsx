@@ -54,7 +54,8 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
   }, []);
 
   // Extract certificate details with fallbacks matching exact sample image
-  const certNumber = cert?.certificate_number || 'UAG-TC-22-REW-00746';
+  const currentYY = new Date().getFullYear().toString().slice(-2);
+  const certNumber = cert?.certificate_number || 'UAG-TC-${currentYY}-REW-00746';
   const certificateRefCode = certNumber;
   const rawSalutation = cert?.salutation || 'Mr.';
   const candidateRawName = cert?.candidate?.full_name || 'SARDAR YADAV';
@@ -84,9 +85,9 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
 
   // Regulation & Resolution Details
   const stcwRegulation = cert?.stcw_regulation || 'Regulation III/4, Section A-III/4, Table A-III/4 of the IMO International Convention on Standards of Training, Certification and Watchkeeping for Seafarers STCW 1978, as amended';
-  const resolutionNo = cert?.resolution_number || 'DGGM-CFM-005-2024';
-  const resolutionDateStr = cert?.resolution_date ? formatDate(cert.resolution_date) : 'February 06th, 2024';
-  const resolutionExpiryStr = cert?.resolution_expiry ? formatDate(cert.resolution_expiry) : 'June 12th, 2026';
+  const resolutionNo = cert?.resolution_number || 'DGGM-CFM-005-2025';
+  const resolutionDateStr = cert?.resolution_date ? formatDate(cert.resolution_date) : 'February 06th, 2025';
+  const resolutionExpiryStr = cert?.resolution_expiry ? formatDate(cert.resolution_expiry) : 'June 12th, 2027';
 
   // Dates & Locations
   const heldFromStr = cert?.held_from ? formatDate(cert.held_from) : 'April 11th, 2026';
@@ -98,7 +99,7 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
   const expiryDateStr = cert?.expiry_date ? formatDate(cert.expiry_date) : 'April 24th, 2031';
 
   const validityText = cert?.validity_years_text || '(THIS CERTIFICATE IS VALID FOR FIVE (5) YEARS)';
-  const revisionCode = cert?.revision_code || 'REV. 2/2024';
+  const revisionCode = cert?.revision_code || 'REV. 2/2025';
   const numericHash = cert?.numeric_hash || (cert?.verification_hash ? extractNumericHash(cert.verification_hash) : '35637595039365');
 
   // Exact height for 1000px width with 1.4142857 aspect ratio (297mm / 210mm) is 707px
@@ -108,7 +109,7 @@ export default function OfficialCertificatePDF({ cert, className = '', id = 'cer
 
   return (
     <>
-      <style jsx global>{`
+      <style>{`
         @media print {
           @page {
             size: 297mm 210mm;

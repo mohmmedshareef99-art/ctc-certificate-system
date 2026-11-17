@@ -189,7 +189,7 @@ export default function AdminPage() {
   const [quickStcwRegulation, setQuickStcwRegulation] = useState(
     'Regulation III/5, Section A-III/5, Table III/5 of the IMO International Convention on Standards of Training, Certification and Watchkeeping for Seafarers STCW 1978, as amended'
   );
-  const [quickResolutionNo, setQuickResolutionNo] = useState('DGGM-CFM-005-2024');
+  const [quickResolutionNo, setQuickResolutionNo] = useState('DGGM-CFM-005-2025');
   const [quickResolutionDate, setQuickResolutionDate] = useState('2024-02-06');
   const [quickResolutionExpiry, setQuickResolutionExpiry] = useState('2026-06-12');
 
@@ -201,7 +201,7 @@ export default function AdminPage() {
   const [quickIssueDate, setQuickIssueDate] = useState('2026-04-11');
   const [quickExpiryDate, setQuickExpiryDate] = useState('2031-04-10');
   const [quickValidityText, setQuickValidityText] = useState('(THIS CERTIFICATE IS VALID FOR FIVE (5) YEARS)');
-  const [quickRevisionCode, setQuickRevisionCode] = useState('REV. 2/2024');
+  const [quickRevisionCode, setQuickRevisionCode] = useState('REV. 2/2025');
   const [quickNumericHash, setQuickNumericHash] = useState('35830462448604');
 
   const [isQuickIssuing, setIsQuickIssuing] = useState(false);
@@ -246,14 +246,12 @@ export default function AdminPage() {
 
   // Certificate Reference Code Auto-Generator: UAG-TC-[YEAR_YY]-[COURSE_SUFFIX]-[5_DIGIT_SEQ]
   const handleGenerateCertCode = () => {
-    const yearYY = (quickIssueDate ? new Date(quickIssueDate) : new Date())
-      .getFullYear()
-      .toString()
-      .slice(-2);
+    const yearYY = new Date().getFullYear().toString().slice(-2);
 
     const selectedCourseObj = courses.find((c) => c.id === quickCourseId) || courses[0];
     const courseSuffix = deriveCourseSuffix(selectedCourseObj);
     const sequence5Digit = Math.floor(1 + Math.random() * 99999).toString().padStart(5, '0');
+
 
     const generatedCode = `UAG-TC-${yearYY}-${courseSuffix}-${sequence5Digit}`;
     setQuickCustomCertNo(generatedCode);
@@ -867,8 +865,8 @@ export default function AdminPage() {
           <button
             onClick={() => setActiveTab('quick_add')}
             className={`px-5 py-3.5 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'quick_add'
-                ? 'border-emerald-400 text-emerald-400 bg-emerald-950/50 font-extrabold shadow-inner'
-                : 'border-transparent text-emerald-300 hover:text-white hover:bg-emerald-900/20'
+              ? 'border-emerald-400 text-emerald-400 bg-emerald-950/50 font-extrabold shadow-inner'
+              : 'border-transparent text-emerald-300 hover:text-white hover:bg-emerald-900/20'
               }`}
           >
             <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
@@ -878,8 +876,8 @@ export default function AdminPage() {
           <button
             onClick={() => setActiveTab('directory')}
             className={`px-5 py-3.5 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'directory'
-                ? 'border-sky-400 text-sky-400 bg-sky-900/30'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/40'
+              ? 'border-sky-400 text-sky-400 bg-sky-900/30'
+              : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/40'
               }`}
           >
             <FileCheck2 className="w-4 h-4" />
@@ -889,8 +887,8 @@ export default function AdminPage() {
           <button
             onClick={() => setActiveTab('issuer')}
             className={`px-5 py-3.5 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'issuer'
-                ? 'border-sky-400 text-sky-400 bg-sky-900/30'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/40'
+              ? 'border-sky-400 text-sky-400 bg-sky-900/30'
+              : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/40'
               }`}
           >
             <QrIcon className="w-4 h-4 text-emerald-400" />
@@ -900,8 +898,8 @@ export default function AdminPage() {
           <button
             onClick={() => setActiveTab('candidates')}
             className={`px-5 py-3.5 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'candidates'
-                ? 'border-sky-400 text-sky-400 bg-sky-900/30'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/40'
+              ? 'border-sky-400 text-sky-400 bg-sky-900/30'
+              : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/40'
               }`}
           >
             <Users className="w-4 h-4" />
@@ -911,8 +909,8 @@ export default function AdminPage() {
           <button
             onClick={() => setActiveTab('courses')}
             className={`px-5 py-3.5 text-xs font-bold uppercase tracking-wider flex items-center gap-2 border-b-2 transition-all cursor-pointer whitespace-nowrap ${activeTab === 'courses'
-                ? 'border-sky-400 text-sky-400 bg-sky-900/30'
-                : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/40'
+              ? 'border-sky-400 text-sky-400 bg-sky-900/30'
+              : 'border-transparent text-slate-300 hover:text-white hover:bg-slate-800/40'
               }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -1157,7 +1155,7 @@ export default function AdminPage() {
                                 type="text"
                                 value={quickResolutionNo}
                                 onChange={(e) => setQuickResolutionNo(e.target.value)}
-                                placeholder="DGGM-CFM-005-2024"
+                                placeholder="DGGM-CFM-005-2025"
                                 className="w-full pl-2.5 pr-20 py-2 bg-white border border-slate-300 rounded-xl font-mono text-slate-900 text-xs focus:outline-none focus:border-[#0088CC] focus:ring-1 focus:ring-[#0088CC] transition-all"
                               />
                               <button
@@ -1281,7 +1279,7 @@ export default function AdminPage() {
                               type="text"
                               value={quickRevisionCode}
                               onChange={(e) => setQuickRevisionCode(e.target.value)}
-                              placeholder="REV. 2/2024"
+                              placeholder="REV. 2/2025"
                               className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl font-mono text-slate-900 focus:outline-none focus:border-[#0088CC]"
                             />
                           </div>
@@ -1473,10 +1471,10 @@ export default function AdminPage() {
                                   value={cert.status}
                                   onChange={(e) => handleStatusChange(cert.id, e.target.value as CertificateStatus)}
                                   className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border cursor-pointer ${cert.status === 'VALID'
-                                      ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                                      : cert.status === 'EXPIRED'
-                                        ? 'bg-amber-100 text-amber-800 border-amber-300'
-                                        : 'bg-rose-100 text-rose-800 border-rose-300'
+                                    ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                                    : cert.status === 'EXPIRED'
+                                      ? 'bg-amber-100 text-amber-800 border-amber-300'
+                                      : 'bg-rose-100 text-rose-800 border-rose-300'
                                     }`}
                                 >
                                   <option value="VALID">VALID</option>
@@ -2200,8 +2198,8 @@ export default function AdminPage() {
                                 <td className="p-3.5 whitespace-nowrap">
                                   <span
                                     className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${isActive
-                                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                                        : 'bg-slate-200 text-slate-700 border border-slate-300'
+                                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                      : 'bg-slate-200 text-slate-700 border border-slate-300'
                                       }`}
                                   >
                                     <span
@@ -2220,8 +2218,8 @@ export default function AdminPage() {
                                       disabled={isToggling}
                                       title={isActive ? 'Disable course for certificate issuance' : 'Enable course'}
                                       className={`px-2.5 py-1.5 rounded-lg text-[11px] font-bold border flex items-center gap-1 transition-all cursor-pointer ${isActive
-                                          ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300'
-                                          : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
+                                        ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border-amber-300'
+                                        : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-300'
                                         }`}
                                     >
                                       {isToggling ? (

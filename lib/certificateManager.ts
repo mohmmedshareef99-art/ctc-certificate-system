@@ -143,7 +143,7 @@ const INITIAL_CERTIFICATES: CertificateRecord[] = [
     status: 'VALID',
     verification_hash: '35830462448604a7b8c9d0e1f2345678',
     stcw_regulation: 'Regulation III/5, Section A-III/5, Table III/5 of the IMO International Convention on Standards of Training, Certification and Watchkeeping for Seafarers STCW 1978, as amended',
-    resolution_number: 'DGGM-CFM-005-2024',
+    resolution_number: 'DGGM-CFM-005-2025',
     resolution_date: '2024-02-06',
     resolution_expiry: '2026-06-12',
     held_from: '2026-03-10',
@@ -151,7 +151,7 @@ const INITIAL_CERTIFICATES: CertificateRecord[] = [
     course_mode: 'Presential',
     conducted_at: 'AZERBAIJAN',
     validity_years_text: '(THIS CERTIFICATE IS VALID FOR FIVE (5) YEARS)',
-    revision_code: 'REV. 2/2024',
+    revision_code: 'REV. 2/2025',
     numeric_hash: '35830462448604'
   },
   {
@@ -165,7 +165,7 @@ const INITIAL_CERTIFICATES: CertificateRecord[] = [
     status: 'VALID',
     verification_hash: 'a7b8c9d0e1f234567890abcdef123456',
     stcw_regulation: 'Regulation VI/1-2 of the IMO International Convention on Standards of Training, Certification and Watchkeeping for Seafarers STCW 1978, as amended',
-    resolution_number: 'DGGM-CFM-005-2024',
+    resolution_number: 'DGGM-CFM-005-2025',
     resolution_date: '2024-02-06',
     resolution_expiry: '2026-06-12',
     held_from: '2024-03-01',
@@ -173,7 +173,7 @@ const INITIAL_CERTIFICATES: CertificateRecord[] = [
     course_mode: 'Presential',
     conducted_at: 'PANAMA',
     validity_years_text: '(THIS CERTIFICATE IS VALID FOR FIVE (5) YEARS)',
-    revision_code: 'REV. 2/2024',
+    revision_code: 'REV. 2/2025',
     numeric_hash: '84920194820194'
   }
 ];
@@ -614,7 +614,7 @@ export async function getCertificates(search?: string): Promise<CertificateRecor
       let result = data as CertificateRecord[];
       if (search) {
         const q = search.toLowerCase();
-        result = result.filter(c => 
+        result = result.filter(c =>
           c.certificate_number?.toLowerCase().includes(q) ||
           c.candidate?.full_name?.toLowerCase().includes(q) ||
           c.candidate?.passport_id?.toLowerCase().includes(q)
@@ -721,7 +721,7 @@ export async function createCertificate(
 ): Promise<CertificateRecord> {
   const randomNum = Math.floor(10000 + Math.random() * 90000);
   const certNumber = details?.certificate_number?.trim() || `UAG-TC-26-ASE-${randomNum}`;
-  
+
   // Generate high-entropy hex verification hash
   const array = new Uint8Array(16);
   if (typeof window !== 'undefined' && window.crypto) {
@@ -744,7 +744,7 @@ export async function createCertificate(
     verification_hash: hash,
     salutation: details?.salutation || 'Mr.',
     stcw_regulation: details?.stcw_regulation || 'Regulation III/5, Section A-III/5, Table III/5 of the IMO International Convention on Standards of Training, Certification and Watchkeeping for Seafarers STCW 1978, as amended',
-    resolution_number: details?.resolution_number || 'DGGM-CFM-005-2024',
+    resolution_number: details?.resolution_number || 'DGGM-CFM-005-2025',
     resolution_date: details?.resolution_date || '2024-02-06',
     resolution_expiry: details?.resolution_expiry || '2026-06-12',
     held_from: details?.held_from || '2026-03-10',
@@ -752,7 +752,7 @@ export async function createCertificate(
     course_mode: details?.course_mode || 'Presential',
     conducted_at: details?.conducted_at || 'AZERBAIJAN',
     validity_years_text: details?.validity_years_text || '(THIS CERTIFICATE IS VALID FOR FIVE (5) YEARS)',
-    revision_code: details?.revision_code || 'REV. 2/2024',
+    revision_code: details?.revision_code || 'REV. 2/2025',
     numeric_hash: numHash
   };
 

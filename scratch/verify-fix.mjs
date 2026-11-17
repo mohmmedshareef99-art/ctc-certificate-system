@@ -12,7 +12,7 @@ const supabaseService = createClient(env.NEXT_PUBLIC_SUPABASE_URL, env.SUPABASE_
 
 async function verifyFix() {
   console.log('--- STARTING VERIFICATION TEST ---');
-  
+
   // 1. Fetch existing course or create temporary one
   const coursesRes = await supabaseService.from('courses').select('*').limit(1);
   if (!coursesRes.data || coursesRes.data.length === 0) {
@@ -44,7 +44,7 @@ async function verifyFix() {
     verification_hash: 'verifyhash-full-' + Date.now(),
     salutation: 'Mr.',
     stcw_regulation: 'Regulation III/5',
-    resolution_number: 'DGGM-CFM-005-2024',
+    resolution_number: 'DGGM-CFM-005-2025',
     resolution_date: '2024-02-06',
     resolution_expiry: '2026-06-12',
     held_from: '2026-03-10',
@@ -52,7 +52,7 @@ async function verifyFix() {
     course_mode: 'Presential',
     conducted_at: 'AZERBAIJAN',
     validity_years_text: '(VALID FOR 5 YEARS)',
-    revision_code: 'REV. 2/2024',
+    revision_code: 'REV. 2/2025',
     numeric_hash: '35830462448604'
   };
 

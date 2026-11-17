@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS public.certificates (
     verification_hash VARCHAR(255) NOT NULL UNIQUE,
     salutation VARCHAR(20) DEFAULT 'Mr.',
     stcw_regulation TEXT DEFAULT 'Regulation III/5, Section A-III/5, Table III/5 of the IMO International Convention on Standards of Training, Certification and Watchkeeping for Seafarers STCW 1978, as amended',
-    resolution_number VARCHAR(100) DEFAULT 'DGGM-CFM-005-2024',
+    resolution_number VARCHAR(100) DEFAULT 'DGGM-CFM-005-2025',
     resolution_date DATE DEFAULT '2024-02-06',
     resolution_expiry DATE DEFAULT '2026-06-12',
     held_from DATE DEFAULT '2026-03-10',
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS public.certificates (
     course_mode VARCHAR(50) DEFAULT 'Presential',
     conducted_at VARCHAR(150) DEFAULT 'AZERBAIJAN',
     validity_years_text VARCHAR(100) DEFAULT '(THIS CERTIFICATE IS VALID FOR FIVE (5) YEARS)',
-    revision_code VARCHAR(50) DEFAULT 'REV. 2/2024',
+    revision_code VARCHAR(50) DEFAULT 'REV. 2/2025',
     numeric_hash VARCHAR(50) DEFAULT '35830462448604',
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
