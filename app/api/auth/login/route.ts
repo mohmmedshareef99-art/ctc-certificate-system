@@ -89,11 +89,15 @@ export async function POST(request: Request) {
             maxAge: 60 * 60 * 24,
           });
 
-          return NextResponse.json({
-            success: true,
-            message: 'Signed in successfully via Admin Database',
-            user: userObj,
-          });
+          // return NextResponse.json({
+          //   success: true,
+          //   message: 'Signed in successfully via Admin Database',
+          //   user: userObj,
+          // });
+          return NextResponse.json(
+            { success: false, message: 'Invalid email or password.' },
+            { status: 401 }
+          );
         } else {
           return NextResponse.json(
             { success: false, message: 'Invalid email or password.' },
