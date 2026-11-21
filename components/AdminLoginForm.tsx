@@ -34,8 +34,8 @@ export default function AdminLoginForm({ onSuccess }: AdminLoginFormProps) {
           } else {
             router.push('/admin');
             router.refresh();
-          }
-        }, 600);
+            ///just add curly bracket here
+          }, 600);
       } else {
         setErrorMsg(res.message || 'Invalid credentials. Please check email & password.');
       }
