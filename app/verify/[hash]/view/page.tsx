@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { getCertificateByHash, CertificateRecord } from '@/lib/certificateManager';
 import { downloadCertificatePDF } from '@/lib/pdfExport';
-import OfficialCertificatePDF from '@/components/OfficialCertificatePDF';
+// import OfficialCertificatePDF from '@/components/OfficialCertificatePDF';
 
 interface CertificateViewPageProps {
   params: Promise<{ hash: string }>;
