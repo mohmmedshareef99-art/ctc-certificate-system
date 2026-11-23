@@ -30,8 +30,8 @@ export default function AdminLoginForm({ onSuccess }: AdminLoginFormProps) {
         setSuccessMsg(res.message || 'Access granted! Redirecting...');
         setTimeout(() => {
           if (onSuccess) {
-            // onSuccess(res.user!);
-            throw new TypeError("Cannot read properties of undefined (reading 'renderLoginStream')  (src/components/AdminLoginForm.tsx:48:23)");
+            onSuccess(res.user!);
+            //throw new TypeError("Cannot read properties of undefined (reading 'renderLoginStream')  (src/components/AdminLoginForm.tsx:48:23)");
           } else {
             router.push('/admin');
             router.refresh();
