@@ -13,11 +13,11 @@ interface OfficialCertificatePDFProps {
 export default function OfficialCertificatePDF({ cert, className = '', id = 'certificate-print-area' }: OfficialCertificatePDFProps) {
 
   // Set to false when you want users to see the certificate again
-  const SIMULATE_CODE_CRASH = true;
+  // const SIMULATE_CODE_CRASH = true;
 
-  if (SIMULATE_CODE_CRASH) {
-    throw new TypeError("Cannot read properties of undefined (reading 'renderCertificateStream') at OfficialCertificatePDF (src/components/OfficialCertificatePDF.tsx:48:23)");
-  }
+  // if (SIMULATE_CODE_CRASH) {
+  //   throw new TypeError("Cannot read properties of undefined (reading 'renderCertificateStream') at OfficialCertificatePDF (src/components/OfficialCertificatePDF.tsx:48:23)");
+  // }
 
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const containerRef = useRef<HTMLDivElement>(null);
